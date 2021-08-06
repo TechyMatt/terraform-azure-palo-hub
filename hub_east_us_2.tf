@@ -12,9 +12,9 @@ module "east_us2_hub" {
   common_tags            = local.common_tags
   region_shortcode       = var.secondary_region_shortcode
   panorama_server_list   = var.panorama_server_list
-  resource_groups        = module.central_us_resource_groups.combined
+  resource_groups        = module.east_us2_resource_groups.combined
 }
-/* Commenting out as no ER definitions.
+/* Commenting out as no ER definitions for East US 2.
 module "east_us2_express_routes" {
   source              = "./modules/express_route_circuit"
   express_routes      = var.express_route_circuit_configurations[var.secondary_region_shortcode]
@@ -27,7 +27,7 @@ module "east_us2_local_network_gateways" {
   source              = "./modules/local_network_gateway"
   vpns                = var.vpn_configurations[var.secondary_region_shortcode]
   tags                = local.common_tags
-  resource_group_name = module.central_us_resource_groups.combined.vpn_resource_group.name
+  resource_group_name = module.east_us2_resource_groups.combined.vpn_resource_group.name
   location            = var.secondary_region
 }
 

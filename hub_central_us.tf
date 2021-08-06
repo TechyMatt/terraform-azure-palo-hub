@@ -39,3 +39,4 @@ module "central_us_virtual_network_gateways" {
   location            = var.primary_region
 }
 */
+
