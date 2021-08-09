@@ -79,3 +79,37 @@ resource "azurerm_network_interface_backend_address_pool_association" "obew" {
   depends_on = [module.trust_lb, module.palo_inbound]
 }
 
+resource "azurerm_route" "trust" {
+  name                   = "default_egress"
+  route_table_name       = module.vnet.route_tables.trust.name
+  resource_group_name    = var.resource_groups.networking_resource_group.name
+  address_prefix         = "0.0.0.0/0"
+  next_hop_type          = "VirtualAppliance"
+  next_hop_in_ip_address = var.networking_definitions.trust_lb_ip
+}
+
+resource "azurerm_route" "untrust" {
+  name                = "default_egress"
+  route_table_name    = module.vnet.route_tables.untrust.name
+  resource_group_name = var.resource_groups.networking_resource_group.name
+  address_prefix      = "0.0.0.0/0"
+  next_hop_type       = "internet"
+}
+
+resource "azurerm_route" "management" {
+  name                = "default_egress"
+  route_table_name    = module.vnet.route_tables.management.name
+  resource_group_name = var.resource_groups.networking_resource_group.name
+  address_prefix      = "0.0.0.0/0"
+  next_hop_type       = "VirtualNetworkGateway"
+}
+
+resource "azurerm_route" "gatewaysubnet" {
+  for_each               = var.networking_definitions.regional_azure_networks
+  name                   = each.key
+  route_table_name       = module.vnet.route_tables.gatewaysubnet.name
+  resource_group_name    = var.resource_groups.networking_resource_group.name
+  address_prefix         = each.value
+  next_hop_type          = "VirtualAppliance"
+  next_hop_in_ip_address = var.networking_definitions.trust_lb_ip
+}

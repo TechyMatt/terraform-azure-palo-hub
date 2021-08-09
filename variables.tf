@@ -37,7 +37,12 @@ variable "secondary_region_shortcode" {
 variable "networking_definitions" {
   default = {
     CUS = {
-      "address_space"     = ["10.0.0.0/16"]
+      "hub_vnet_address_space" = ["10.0.0.0/16"]
+      "regional_azure_networks" = {
+        "Azure_10.100.0.0_16" = "10.100.0.0/16"
+        "Azure_10.101.0.0_16" = "10.101.0.0/16"
+        "Azure_10.101.0.0_16" = "10.102.0.0/16"
+      }
       "dns_servers"       = ["168.63.129.16"]
       "gatewaysubnet"     = "10.0.0.0/28"
       "subnet_trust"      = "10.0.1.0/24"
@@ -100,7 +105,12 @@ variable "networking_definitions" {
       }
     }
     EUS2 = {
-      "address_space"     = ["10.1.0.0/16"]
+      "hub_vnet_address_space" = ["10.1.0.0/16"]
+      "regional_azure_networks" = {
+        "Azure_10.200.0.0_16" = "10.200.0.0/16"
+        "Azure_10.201.0.0_16" = "10.201.0.0/16"
+        "Azure_10.201.0.0_16" = "10.202.0.0/16"
+      }
       "dns_servers"       = ["168.63.129.16"]
       "gatewaysubnet"     = "10.1.0.0/28"
       "subnet_trust"      = "10.1.1.0/24"
@@ -200,7 +210,7 @@ variable "vpn_configurations" {
       production = {
         name            = "CUS-VPN-DR"
         gateway_address = "1.1.1.1"
-        address_space   = ["0.0.0.0/1","128.0.0.0/1"]
+        address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
       }
       management = {
         name            = "CUS-VPN-Management-DR"
@@ -212,7 +222,7 @@ variable "vpn_configurations" {
       production = {
         name            = "CUS-VPN-DR"
         gateway_address = "1.1.1.1"
-        address_space   = ["0.0.0.0/1","128.0.0.0/1"]
+        address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
 
       }
       management = {
