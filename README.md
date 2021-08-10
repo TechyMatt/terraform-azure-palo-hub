@@ -15,4 +15,66 @@ This terraform workspace by default deploys a dual region setup within Azure (Ce
   
 ## Usage instructions
 
-The configuration is controlled by passing in variables either using the command line, or through a .tfvars file.
+The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted.
+```terraform
+"Central US" = {
+      "region_abbreviation"    = ""
+      "hub_vnet_address_space" = [""]
+      "regional_azure_networks" = {
+        "Azure_10.100.0.0_16" = "10.100.0.0/16"
+      }
+      "dns_servers"       = [""]
+      "gatewaysubnet"     = ""
+      "subnet_trust"      = ""
+      "subnet_management" = ""
+      "subnet_untrust"    = ""
+      "trust_lb_ip"       = ""
+      "nva_configuration" = {
+        "inbound" = {
+          "nva_1" = {
+            name                   = ""
+            trust_ip               = ""
+            management_ip          = ""
+            untrust_ip             = ""
+            zone                   = ""
+            vm_auth_key            = ""
+            tplname                = ""
+            dgname                 = ""
+            registration_pin_id    = ""
+            registration_pin_value = ""
+          }
+        }
+        "obew" = {
+          "nva_1" = {
+            name                   = ""
+            trust_ip               = ""
+            management_ip          = ""
+            untrust_ip             = ""
+            zone                   = ""
+            vm_auth_key            = ""
+            tplname                = ""
+            dgname                 = ""
+            registration_pin_id    = ""
+            registration_pin_value = ""
+          }
+        }
+      }
+      "vpns" = {
+        "production" = {
+          name            = ""
+          gateway_address = ""
+          address_space   = [""]
+        }
+      }
+      "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
+        "production" = {
+          name                  = ""
+          service_provider_name = ""
+          peering_location      = ""
+          bandwidth_in_mbps     = ""
+          tier                  = ""
+          family                = ""
+        }
+      }
+    }
+```

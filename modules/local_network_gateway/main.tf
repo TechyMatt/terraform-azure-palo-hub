@@ -2,12 +2,16 @@ variable "resource_group_name" {}
 
 variable "tags" {}
 
-variable "vpns" {}
+variable "networking_definitions" {}
 
 variable "location" {}
 
+locals {
+  vpns = var.networking_definitions[var.location].vpns
+}
+
 resource "azurerm_local_network_gateway" "local" {
-  for_each            = var.vpns
+  for_each            = local.vpns
   name                = each.value.name
   resource_group_name = var.resource_group_name
   location            = var.location

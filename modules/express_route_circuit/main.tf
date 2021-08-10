@@ -1,5 +1,10 @@
+variable "tags" {}
+variable "resource_group_name" {}
+variable "location" {}
+variable "networking_definitions" {}
+
 resource "azurerm_express_route_circuit" "local" {
-  for_each              = var.express_routes
+  for_each              = var.networking_definitions[var.location].express_routes
   name                  = each.value.name
   resource_group_name   = var.resource_group_name
   location              = var.location
@@ -17,8 +22,8 @@ resource "azurerm_express_route_circuit" "local" {
   tags = var.tags
 }
 
-resource "azurerm_express_route_circuit_authorization" "example" {
-  for_each                   = var.express_routes
+resource "azurerm_express_route_circuit_authorization" "local" {
+  for_each                   = var.networking_definitions[var.location].express_routes
   name                       = "${each.value.name}-Auth"
   express_route_circuit_name = azurerm_express_route_circuit.local[each.key].name
   resource_group_name        = var.resource_group_name

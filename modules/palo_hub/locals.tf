@@ -1,18 +1,5 @@
 locals {
-  gatewaysubnet_route_definitions = {
-    "azure_region_route" = {
-    }
-  }
+  networking_definitions = var.networking_definitions[var.location]
 
-  trustsubnet_route_definitions = {
-
-  }
-
-  management_subnet_route_definitions = {
-
-  }
-
-  untrust_subnet_route_definitions = {
-
-  }
+  region_shortcode = var.networking_definitions[var.location].region_abbreviation
 }
