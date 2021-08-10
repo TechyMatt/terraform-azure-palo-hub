@@ -24,54 +24,59 @@ The configuration is controlled by passing in variables either using the command
 
 ```terraform
 networking_definitions = {
-  "Central US" = {
-      "region_abbreviation"    = ""
-      "hub_vnet_address_space" = [""]
-      "regional_azure_networks" = {
+  "Central US" = { //This needs to be the name of the region to deploy workload
+      "region_abbreviation"    = "" //This is a freeform abbreviation of the region
+      "hub_vnet_address_space" = [""] //The RFC1918 address space to be used for the hub (minimum /24)
+      "regional_azure_networks" = { //This is a list of all networks within the Azure Region (including the hub network).
         "Azure_10.100.0.0_16" = "10.100.0.0/16"
       }
-      "dns_servers"       = [""]
-      "gatewaysubnet"     = ""
-      "subnet_trust"      = ""
-      "subnet_management" = ""
-      "subnet_untrust"    = ""
-      "trust_lb_ip"       = ""
+      "dns_servers"       = [""] //A list of DNS Servers that resources should use to query both private and public DNS
+      "gatewaysubnet"     = "" //A minimum of /28 (larger if more VPNs) allocated from hub_vnet_address_space
+      "subnet_trust"      = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
+      "subnet_management" = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
+      "subnet_untrust"    = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
+      "trust_lb_ip"       = "" //The IP address from the subnet_trust that should be static for the Load Balancer
       "nva_configuration" = {
-        "inbound" = {
-          "nva_1" = {
-            name                   = ""
-            trust_ip               = ""
-            management_ip          = ""
-            untrust_ip             = ""
-            zone                   = ""
-            vm_auth_key            = ""
-            tplname                = ""
-            dgname                 = ""
-            registration_pin_id    = ""
-            registration_pin_value = ""
+        "inbound" = { //This section is for the Palo Altos to be used purely for routing inbound traffic
+          "nva_1" = { //A reference name for the terraform resources. Each additional Palo in "inbound" must be unique"
+            name                   = "" //The Device Name of the Palo Alto
+            trust_ip               = "" //The IP address to allocate to the trust interface, from subnet_trust
+            management_ip          = "" //The IP address to allocate to the management interface, from subnet_management
+            untrust_ip             = "" //The IP address to allocate to the untrust interface, from subnet_untrust
+            zone                   = "" //The availability zone to deploy the PaloAlto in
+            vm_auth_key            = "" //**bootstrap** The authorization key for the Palo to connect to Panorama
+            tplname                = "" //**bootstrap** The template name in Panorama to deploy to the device
+            dgname                 = "" //**bootstrap** The Device Group name in Panorama to deploy to the device
+            registration_pin_id    = "" //**bootstrap** The panorama registration pin id
+            registration_pin_value = "" //**bootstrap** The panorama registration pin value
           }
         }
         "obew" = {
-          "nva_1" = {
-            name                   = ""
-            trust_ip               = ""
-            management_ip          = ""
-            untrust_ip             = ""
-            zone                   = ""
-            vm_auth_key            = ""
-            tplname                = ""
-            dgname                 = ""
-            registration_pin_id    = ""
-            registration_pin_value = ""
+          "nva_1" = { //This is identical to above, however is for the Palos performing outbound and east west
+            name                   = "" //The Device Name of the Palo Alto
+            trust_ip               = "" //The IP address to allocate to the trust interface, from subnet_trust
+            management_ip          = "" //The IP address to allocate to the management interface, from subnet_management
+            untrust_ip             = "" //The IP address to allocate to the untrust interface, from subnet_untrust
+            zone                   = "" //The availability zone to deploy the PaloAlto in
+            vm_auth_key            = "" //**bootstrap** The authorization key for the Palo to connect to Panorama
+            tplname                = "" //**bootstrap** The template name in Panorama to deploy to the device
+            dgname                 = "" //**bootstrap** The Device Group name in Panorama to deploy to the device
+            registration_pin_id    = "" //**bootstrap** The panorama registration pin id
+            registration_pin_value = "" //**bootstrap** The panorama registration pin value
           }
         }
       }
-      "vpns" = {
-        "production" = {
-          name            = ""
-          gateway_address = ""
-          address_space   = [""]
-          pre-shared-key  = ""
+      "vpns" = { //This section contains the IPSec VPNs to be deployed. In the event no VPNs are required for this region leave {}
+        "production" = { //A reference name for the terraform resources.
+          name            = "" //The name of the VPN for future reference
+          gateway_address = "" //The destination address to connect to
+          address_space   = [""] //The destination addresses if BGP not configured
+          bgp_settings = { //https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-bgp-overview
+            asn = "" //The BGP ASN number. If Blank then no BGP is configured
+            bgp_peering_address = "" //The BGP peering address and BGP identifier of this BGP speaker.
+            peer_weight = "" //The weight added to routes learned from this BGP speaker.
+          }
+          pre-shared-key  = "" //The pre-shared key of the IPSec tunnel
         }
       }
       "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
