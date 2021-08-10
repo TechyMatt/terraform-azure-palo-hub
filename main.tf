@@ -22,6 +22,7 @@ module "express_routes" {
   tags                   = var.tags.common_tags
 }
 
+//If pending ExpressRoute enablement, comment out the following resources until provisioned.
 module "palo_hub" {
   for_each               = var.networking_definitions
   source                 = "./modules/palo_hub"

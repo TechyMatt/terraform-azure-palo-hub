@@ -1,21 +1,25 @@
 # Terrform Repository for deploying PaloAlto NVAs into Azure Hubs across multiple regions
 
-## Refernece History
-This repsitory is based of the Transit VNet model located within the Palo Alto reference architecture available at the [Securing Applications in Azure](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/azure-architecture-guide) on page 61.
+## Architecture history History
+
+This repository is based of the Transit VNet model located within the Palo Alto reference architecture available at the [Securing Applications in Azure](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/azure-architecture-guide) on page 61.
 
 ![PaloAlto Transit Architecture](images/Palo_Reference_Architecture.png?raw=true "PaloAlto Transit Architecture")
 
 ## Overview of deployment
+
 This terraform workspace by default deploys a dual region setup within Azure (Central US & East US 2) deploying seperate Inbound and Outbound East West Palo Altos. The Palo Alto devices are deployed using bootstrapping leveraging Cloud-Init and documentation around that can be located at the [Palo Alto Documentation for Cloud Init](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/create-the-init-cfgtxt-file/sample-init-cfgtxt-file.html#id114bde92-3176-4c7c-a68a-eadfff80cb29). Settings for the Bootstrapping can be located at the [Palo Alto Bootstrap settings](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-the-vm-series-firewall-in-azure.html)
 
 ## Deployment pre-requisits
 
 - The user executing the script needs to have a minimum of Contributor level access to the target subscription. This is due to the marketplace registration resource.
 - Any regions can be chosen, however the code requires that the region supports multiple zones, not just availability sets.
+- Connectivity to Panorama Server. If leveraging the ExpressRoute to connect to Panorama then you may need to comment out the resource deployment whilst pending the Circuit Provider provisioning.
   
 ## Usage instructions
 
-The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted.
+The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted. A complete sample can be located within the [variables.tf](terraform.tfvars) file
+
 ```terraform
 "Central US" = {
       "region_abbreviation"    = ""
