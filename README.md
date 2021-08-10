@@ -76,6 +76,7 @@ networking_definitions = {
           pre-shared-key  = "" //The pre-shared key of the IPSec tunnel
         }
       }
+      "express_route_gateway_sku = "" https://docs.microsoft.com/en-us/azure/expressroute/expressroute-about-virtual-network-gateways#gwsku
       "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
         "" = { //The name of the ExpressRoute
           service_provider_name = "" //The name of service provider, e.g. MegaPort

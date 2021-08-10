@@ -31,8 +31,7 @@ networking_definitions = {
     "trust_lb_ip"       = "10.0.1.100"
     "nva_configuration" = {
       "inbound" = {
-        "nva_1" = {
-          name                   = "palo-cus-ns-1"
+        "palo-cus-ns-1" = {
           trust_ip               = "10.0.1.5"
           management_ip          = "10.0.2.5"
           untrust_ip             = "10.0.3.5"
@@ -43,8 +42,7 @@ networking_definitions = {
           registration_pin_id    = "xxxx"
           registration_pin_value = "xxxx"
         }
-        "nva_2" = {
-          name                   = "palo-cus-ns-2"
+        "palo-cus-ns-2" = {
           trust_ip               = "10.0.1.6"
           management_ip          = "10.0.2.6"
           untrust_ip             = "10.0.3.6"
@@ -57,8 +55,7 @@ networking_definitions = {
         }
       }
       "obew" = {
-        "nva_1" = {
-          name                   = "palo-cus-ew-1"
+        "palo-cus-ew-1" = {
           trust_ip               = "10.0.1.50"
           management_ip          = "10.0.2.50"
           untrust_ip             = "10.0.3.50"
@@ -69,8 +66,7 @@ networking_definitions = {
           registration_pin_id    = "xxxx"
           registration_pin_value = "xxxx"
         }
-        "nva_2" = {
-          name                   = "palo-cus-ew-2"
+        "palo-cus-ew-2" = {
           trust_ip               = "10.0.1.51"
           management_ip          = "10.0.2.51"
           untrust_ip             = "10.0.3.51"
@@ -83,24 +79,23 @@ networking_definitions = {
         }
       }
     }
+    "vpn_gateway_sku" = "VpnGw1"
     "vpns" = {
-      "production" = {
-        name            = "CUS-VPN-DR"
+      "CUS-VPN-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
         pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
 
       }
-      "management" = {
-        name            = "CUS-VPN-Management-DR"
+      "CUS-VPN-Management-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["192.168.0.0/24"]
         pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
       }
     }
+    "express_route_gateway_sku" = "ERGw1Az"
     "express_routes" = {
-      "production" = {
-        name                  = "ER-to-Chicago-Production"
+      "ER-to-Chicago-Production" = {
         service_provider_name = "Megaport"
         peering_location      = "Chicago"
         bandwidth_in_mbps     = "200"
@@ -111,8 +106,7 @@ networking_definitions = {
           "East US2"
         ]
       }
-      "management" = {
-        name                  = "ER-to-Chicago-Management"
+      "ER-to-Chicago-Management" = {
         service_provider_name = "Megaport"
         peering_location      = "Chicago"
         bandwidth_in_mbps     = "50"
@@ -141,8 +135,7 @@ networking_definitions = {
     "trust_lb_ip"       = "10.1.1.100"
     "nva_configuration" = {
       "inbound" = {
-        "nva_1" = {
-          name                   = "palo-eus2-ns-1"
+        "palo-eus2-ns-1" = {
           trust_ip               = "10.1.1.5"
           management_ip          = "10.1.2.5"
           untrust_ip             = "10.1.3.5"
@@ -153,8 +146,7 @@ networking_definitions = {
           registration_pin_id    = "xxxx"
           registration_pin_value = "xxxx"
         }
-        "nva_2" = {
-          name                   = "palo-eus2-ns-2"
+        "palo-eus2-ns-2" = {
           trust_ip               = "10.1.1.6"
           management_ip          = "10.1.2.6"
           untrust_ip             = "10.1.3.6"
@@ -167,8 +159,7 @@ networking_definitions = {
         }
       }
       "obew" = {
-        "nva_1" = {
-          name                   = "palo-eus2-ew-1"
+        "palo-eus2-ew-1" = {
           trust_ip               = "10.1.1.50"
           management_ip          = "10.1.2.50"
           untrust_ip             = "10.1.3.50"
@@ -179,8 +170,7 @@ networking_definitions = {
           registration_pin_id    = "xxxx"
           registration_pin_value = "xxxx"
         }
-        "nva_2" = {
-          name                   = "palo-eus2-ew-2"
+        "palo-eus2-ew-2" = {
           trust_ip               = "10.1.1.51"
           management_ip          = "10.1.2.51"
           untrust_ip             = "10.1.3.51"
@@ -193,9 +183,9 @@ networking_definitions = {
         }
       }
     }
+    "vpn_gateway_sku" = "VpnGw1"
     "vpns" = {
-      "production" = {
-        name            = "EUS2-VPN-DR"
+      "EUS2-VPN-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
           bgp_settings = {
@@ -205,8 +195,7 @@ networking_definitions = {
           }
           "pre_shared_key"  = "test123"
       }
-      "management" = {
-        name            = "EUS2-VPN-Management-DR"
+      "EUS2-VPN-Management-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["192.168.0.0/24"]
           bgp_settings = {
@@ -217,6 +206,7 @@ networking_definitions = {
           "pre_shared_key"  = "test123"
       }
     }
+    "express_route_gateway_sku" = "ERGw1Az"
     "express_routes" = {}
   }
 }

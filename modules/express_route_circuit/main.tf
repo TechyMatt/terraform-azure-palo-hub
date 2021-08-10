@@ -5,7 +5,7 @@ variable "networking_definitions" {}
 
 resource "azurerm_express_route_circuit" "local" {
   for_each              = var.networking_definitions[var.location].express_routes
-  name                  = each.value.name
+  name                  = each.key
   resource_group_name   = var.resource_group_name
   location              = var.location
   service_provider_name = each.value.service_provider_name
@@ -24,7 +24,7 @@ resource "azurerm_express_route_circuit" "local" {
 
 resource "azurerm_express_route_circuit_authorization" "local" {
   for_each                   = var.networking_definitions[var.location].express_routes
-  name                       = "${each.value.name}-Auth"
+  name                       = "${each.key}-Auth"
   express_route_circuit_name = azurerm_express_route_circuit.local[each.key].name
   resource_group_name        = var.resource_group_name
 }

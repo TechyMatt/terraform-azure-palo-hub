@@ -1,6 +1,6 @@
 resource "azurerm_network_interface" "trust" {
   for_each                      = var.nva_details
-  name                          = "${each.value.name}-trust"
+  name                          = "${each.key}-trust"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = true
@@ -18,7 +18,7 @@ resource "azurerm_network_interface" "trust" {
 
 resource "azurerm_network_interface" "untrust" {
   for_each                      = var.nva_details
-  name                          = "${each.value.name}-untrust"
+  name                          = "${each.key}-untrust"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = true
@@ -35,7 +35,7 @@ resource "azurerm_network_interface" "untrust" {
 
 resource "azurerm_network_interface" "management" {
   for_each            = var.nva_details
-  name                = "${each.value.name}-management"
+  name                = "${each.key}-management"
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -51,13 +51,13 @@ resource "azurerm_network_interface" "management" {
 
 resource "azurerm_linux_virtual_machine" "local" {
   for_each                        = var.nva_details
-  name                            = each.value.name
+  name                            = each.key
   location                        = var.location
   resource_group_name             = var.resource_group_name
   size                            = var.vm_sku
   disable_password_authentication = false
   admin_username                  = var.palo_local_user
-  computer_name                   = each.value.name
+  computer_name                   = each.key
 
   depends_on = [azurerm_network_interface.management, azurerm_network_interface.trust, azurerm_network_interface.untrust]
 
