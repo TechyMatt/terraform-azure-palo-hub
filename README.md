@@ -8,7 +8,9 @@ This repository is based of the Transit VNet model located within the Palo Alto 
 
 ## Overview of deployment
 
-This terraform workspace by default deploys a dual region setup within Azure (Central US & East US 2) deploying seperate Inbound and Outbound East West Palo Altos. The Palo Alto devices are deployed using bootstrapping leveraging Cloud-Init and documentation around that can be located at the [Palo Alto Documentation for Cloud Init](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/create-the-init-cfgtxt-file/sample-init-cfgtxt-file.html#id114bde92-3176-4c7c-a68a-eadfff80cb29). Settings for the Bootstrapping can be located at the [Palo Alto Bootstrap settings](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-the-vm-series-firewall-in-azure.html)
+This terraform workspace by default deploys a dual region setup within Azure (Central US & East US 2) deploying seperate Inbound and Outbound East West Palo Altos. The Palo Alto devices are deployed using bootstrapping leveraging Cloud-Init and documentation around that can be located at the [Palo Alto Documentation for Cloud Init](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/create-the-init-cfgtxt-file/sample-init-cfgtxt-file.html#id114bde92-3176-4c7c-a68a-eadfff80cb29). Settings for the Bootstrapping can be located at the [Palo Alto Bootstrap settings](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-the-vm-series-firewall-in-azure.html).
+
+To provide consistency for connectivity, a /28 of Public IP prefexis is provision per region. This can be configurable in the networking_definitions_variable if more are required.
 
 ## Deployment pre-requisits
 
@@ -18,10 +20,11 @@ This terraform workspace by default deploys a dual region setup within Azure (Ce
   
 ## Usage instructions
 
-The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted. A complete sample can be located within the [variables.tf](terraform.tfvars) file
+The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file
 
 ```terraform
-"Central US" = {
+networking_definitions = {
+  "Central US" = {
       "region_abbreviation"    = ""
       "hub_vnet_address_space" = [""]
       "regional_azure_networks" = {
@@ -68,6 +71,7 @@ The configuration is controlled by passing in variables either using the command
           name            = ""
           gateway_address = ""
           address_space   = [""]
+          pre-shared-key  = ""
         }
       }
       "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
@@ -81,4 +85,5 @@ The configuration is controlled by passing in variables either using the command
         }
       }
     }
+}
 ```
