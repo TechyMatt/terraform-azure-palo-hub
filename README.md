@@ -2,7 +2,7 @@
 
 ## Architecture history History
 
-This repository is based of the Transit VNet model located within the Palo Alto reference architecture available at the [Securing Applications in Azure](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/azure-architecture-guide) on page 61.
+This code example uses the Transit VNet model located within the Palo Alto reference architecture available at the [Securing Applications in Azure](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/azure-architecture-guide) as the core pattern, however extends to include bootstrapping and other base requirements for a landing zone in Azure, including ExpressRoutes and IPSec VPNs.
 
 ![PaloAlto Transit Architecture](images/Palo_Reference_Architecture.png?raw=true "PaloAlto Transit Architecture")
 
@@ -28,7 +28,7 @@ networking_definitions = {
       "region_abbreviation"    = "" //This is a freeform abbreviation of the region
       "hub_vnet_address_space" = [""] //The RFC1918 address space to be used for the hub (minimum /24)
       "regional_azure_networks" = { //This is a list of all networks within the Azure Region (including the hub network).
-        "Azure_10.100.0.0_16" = "10.100.0.0/16"
+        "Azure_10.100.0.0_16" = "10.100.0.0/16" //Format should be name = address. The name must contain NO SPACES.
       }
       "dns_servers"       = [""] //A list of DNS Servers that resources should use to query both private and public DNS
       "gatewaysubnet"     = "" //A minimum of /28 (larger if more VPNs) allocated from hub_vnet_address_space
@@ -38,8 +38,7 @@ networking_definitions = {
       "trust_lb_ip"       = "" //The IP address from the subnet_trust that should be static for the Load Balancer
       "nva_configuration" = {
         "inbound" = { //This section is for the Palo Altos to be used purely for routing inbound traffic
-          "nva_1" = { //A reference name for the terraform resources. Each additional Palo in "inbound" must be unique"
-            name                   = "" //The Device Name of the Palo Alto
+          "" = { //The Device Name of the Palo Alto. Should be unique
             trust_ip               = "" //The IP address to allocate to the trust interface, from subnet_trust
             management_ip          = "" //The IP address to allocate to the management interface, from subnet_management
             untrust_ip             = "" //The IP address to allocate to the untrust interface, from subnet_untrust
@@ -52,8 +51,7 @@ networking_definitions = {
           }
         }
         "obew" = {
-          "nva_1" = { //This is identical to above, however is for the Palos performing outbound and east west
-            name                   = "" //The Device Name of the Palo Alto
+          "" = { //The Device Name of the Palo Alto. Should be unique
             trust_ip               = "" //The IP address to allocate to the trust interface, from subnet_trust
             management_ip          = "" //The IP address to allocate to the management interface, from subnet_management
             untrust_ip             = "" //The IP address to allocate to the untrust interface, from subnet_untrust
@@ -67,8 +65,7 @@ networking_definitions = {
         }
       }
       "vpns" = { //This section contains the IPSec VPNs to be deployed. In the event no VPNs are required for this region leave {}
-        "production" = { //A reference name for the terraform resources.
-          name            = "" //The name of the VPN for future reference
+        "" = { //The name of the VPN
           gateway_address = "" //The destination address to connect to
           address_space   = [""] //The destination addresses if BGP not configured
           bgp_settings = { //https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-bgp-overview
@@ -80,13 +77,12 @@ networking_definitions = {
         }
       }
       "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
-        "production" = {
-          name                  = ""
-          service_provider_name = ""
-          peering_location      = ""
-          bandwidth_in_mbps     = ""
-          tier                  = ""
-          family                = ""
+        "" = { //The name of the ExpressRoute
+          service_provider_name = "" //The name of service provider, e.g. MegaPort
+          peering_location      = "" //The peering location 
+          bandwidth_in_mbps     = "" //The bandwidth of the ExpressRoute
+          tier                  = "" //The tier of ExpressRoute (standard or premium)
+          family                = "" //The data plan, either MeteredData or Unlimited
         }
       }
     }
