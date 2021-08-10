@@ -25,39 +25,58 @@ output "subnets" {
 }
 
 module "palo_inbound" {
-  source               = "./modules/palo_alto_virtual_machine"
-  network_details      = module.vnet.subnets
-  resource_group_name  = var.resource_groups.paloalto_resource_group.name
-  location             = var.location
-  tags                 = merge(var.tags.common_tags, var.tags.compute_tags)
-  nva_details          = local.networking_definitions["nva_configuration"]["inbound"]
-  vm_sku               = var.palo_vm_sku
-  palo_local_user      = var.palo_local_user
-  palo_local_password  = var.palo_local_password
-  panorama_server_list = var.panorama_server_list
+  source                  = "./modules/palo_alto_virtual_machine"
+  network_details         = module.vnet.subnets
+  resource_group_name     = var.resource_groups.paloalto_resource_group.name
+  location                = var.location
+  tags                    = merge(var.tags.common_tags, var.tags.compute_tags)
+  nva_details             = local.networking_definitions["nva_configuration"]["inbound"]
+  vm_sku                  = var.palo_vm_sku
+  palo_local_user         = var.palo_local_user
+  palo_local_password     = var.palo_local_password
+  panorama_server_list    = var.panorama_server_list
+  management_pip_prefixes = azurerm_public_ip_prefix.management
 }
 
 module "palo_obew" {
-  source               = "./modules/palo_alto_virtual_machine"
-  network_details      = module.vnet.subnets
-  resource_group_name  = var.resource_groups.paloalto_resource_group.name
-  location             = var.location
-  tags                 = merge(var.tags.common_tags, var.tags.compute_tags)
-  nva_details          = local.networking_definitions["nva_configuration"]["obew"]
-  vm_sku               = var.palo_vm_sku
-  palo_local_user      = var.palo_local_user
-  palo_local_password  = var.palo_local_password
-  panorama_server_list = var.panorama_server_list
+  source                  = "./modules/palo_alto_virtual_machine"
+  network_details         = module.vnet.subnets
+  resource_group_name     = var.resource_groups.paloalto_resource_group.name
+  location                = var.location
+  tags                    = merge(var.tags.common_tags, var.tags.compute_tags)
+  nva_details             = local.networking_definitions["nva_configuration"]["obew"]
+  vm_sku                  = var.palo_vm_sku
+  palo_local_user         = var.palo_local_user
+  palo_local_password     = var.palo_local_password
+  panorama_server_list    = var.panorama_server_list
+  production_pip_prefixes = azurerm_public_ip_prefix.production
+  management_pip_prefixes = azurerm_public_ip_prefix.management
 }
 
-resource "azurerm_public_ip_prefix" "region" {
-  name                = "Hub-${local.region_shortcode}-Prefixes"
+//used for provisioning a public IP subnet for inbound and outbound user traffic.
+resource "azurerm_public_ip_prefix" "production" {
+  name                = "Hub-${local.region_shortcode}-production"
   location            = var.location
   resource_group_name = var.resource_groups.networking_resource_group.name
   availability_zone   = "Zone-Redundant"
   prefix_length       = 28
 
   tags = var.tags.common_tags
+}
+
+//used for provisioning a public IP subnet for the management interfaces of the Palo Altos. By default no IPs will be allocated.
+resource "azurerm_public_ip_prefix" "management" {
+  name                = "Hub-${local.region_shortcode}-Management"
+  location            = var.location
+  resource_group_name = var.resource_groups.networking_resource_group.name
+  availability_zone   = "Zone-Redundant"
+  prefix_length       = 28
+
+  tags = var.tags.common_tags
+}
+
+output "management_pip_prefixes" {
+  value = azurerm_public_ip_prefix.management
 }
 
 module "trust_lb" {

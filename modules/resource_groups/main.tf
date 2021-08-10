@@ -31,17 +31,10 @@ resource "azurerm_resource_group" "paloalto" {
   tags     = var.tags
 }
 
-resource "azurerm_resource_group" "vpn" {
-  name     = local.resource_groups.vpn
-  location = var.location
-  tags     = var.tags
-}
-
 output "combined" {
   value = {
     "express_route_resource_group" = azurerm_resource_group.express_route
     "networking_resource_group"    = azurerm_resource_group.networking
     "paloalto_resource_group"      = azurerm_resource_group.paloalto
-    "vpn_resource_group"           = azurerm_resource_group.vpn
   }
 }

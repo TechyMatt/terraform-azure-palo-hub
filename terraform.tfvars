@@ -24,7 +24,7 @@ networking_definitions = {
       "Azure_10.101.0.0_16" = "10.102.0.0/16"
     }
     "dns_servers"       = ["168.63.129.16"]
-    "gatewaysubnet"     = "10.0.0.0/28"
+    "gatewaysubnet"     = "10.0.0.0/24"
     "subnet_trust"      = "10.0.1.0/24"
     "subnet_management" = "10.0.2.0/24"
     "subnet_untrust"    = "10.0.3.0/24"
@@ -88,12 +88,14 @@ networking_definitions = {
         name            = "CUS-VPN-DR"
         gateway_address = "1.1.1.1"
         address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
+        pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
 
       }
       "management" = {
         name            = "CUS-VPN-Management-DR"
         gateway_address = "1.1.1.1"
         address_space   = ["192.168.0.0/24"]
+        pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
       }
     }
     "express_routes" = {
@@ -101,17 +103,25 @@ networking_definitions = {
         name                  = "ER-to-Chicago-Production"
         service_provider_name = "Megaport"
         peering_location      = "Chicago"
-        bandwidth_in_mbps     = "1000"
+        bandwidth_in_mbps     = "200"
         tier                  = "Standard"
         family                = "MeteredData"
+        gateway_regions = [
+          "Central US",
+          "East US2"
+        ]
       }
       "management" = {
         name                  = "ER-to-Chicago-Management"
         service_provider_name = "Megaport"
         peering_location      = "Chicago"
-        bandwidth_in_mbps     = "200"
+        bandwidth_in_mbps     = "50"
         tier                  = "Standard"
         family                = "MeteredData"
+        gateway_regions = [
+          "Central US",
+          "East US2"
+        ]
       }
     }
   }
@@ -124,7 +134,7 @@ networking_definitions = {
       "Azure_10.201.0.0_16" = "10.202.0.0/16"
     }
     "dns_servers"       = ["168.63.129.16"]
-    "gatewaysubnet"     = "10.1.0.0/28"
+    "gatewaysubnet"     = "10.1.0.0/24"
     "subnet_trust"      = "10.1.1.0/24"
     "subnet_management" = "10.1.2.0/24"
     "subnet_untrust"    = "10.1.3.0/24"
@@ -188,11 +198,23 @@ networking_definitions = {
         name            = "EUS2-VPN-DR"
         gateway_address = "1.1.1.1"
         address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
+          bgp_settings = {
+            asn = "" 
+            bgp_peering_address = "" 
+            peer_weight = ""
+          }
+          "pre_shared_key"  = "test123"
       }
       "management" = {
         name            = "EUS2-VPN-Management-DR"
         gateway_address = "1.1.1.1"
         address_space   = ["192.168.0.0/24"]
+          bgp_settings = {
+            asn = "" 
+            bgp_peering_address = "" 
+            peer_weight = ""
+          }
+          "pre_shared_key"  = "test123"
       }
     }
     "express_routes" = {}

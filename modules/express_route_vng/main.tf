@@ -1,7 +1,9 @@
-variable "location_shortcode" {}
 variable "location" {}
 variable "resource_group_name" {}
-variable "gateway_subnet" {}
+variable "subnets" {}
+variable "management_pip_prefixes" {}
+variable "networking_definitions" {}
+
 
 resource "azurerm_public_ip" "express_route" {
   name                = "${var.location_shortcode}-expressroute-pip"
@@ -18,7 +20,7 @@ resource "azurerm_virtual_network_gateway" "example" {
 
   type = "ExpressRoute"
 
-  enable_bgp = false
+  enable_bgp = true
 
   sku = "Basic"
 

@@ -31,10 +31,10 @@ networking_definitions = {
         "Azure_10.100.0.0_16" = "10.100.0.0/16" //Format should be name = address. The name must contain NO SPACES.
       }
       "dns_servers"       = [""] //A list of DNS Servers that resources should use to query both private and public DNS
-      "gatewaysubnet"     = "" //A minimum of /28 (larger if more VPNs) allocated from hub_vnet_address_space
-      "subnet_trust"      = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
-      "subnet_management" = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
-      "subnet_untrust"    = "" //A minimum of /26 (larger if more VPNs) allocated from hub_vnet_address_space
+      "gatewaysubnet"     = "" //A minimum of /27 (larger if more VPNs) allocated from hub_vnet_address_space
+      "subnet_trust"      = "" //A minimum of /26 allocated from hub_vnet_address_space
+      "subnet_management" = "" //A minimum of /26 allocated from hub_vnet_address_space
+      "subnet_untrust"    = "" //A minimum of /26 allocated from hub_vnet_address_space
       "trust_lb_ip"       = "" //The IP address from the subnet_trust that should be static for the Load Balancer
       "nva_configuration" = {
         "inbound" = { //This section is for the Palo Altos to be used purely for routing inbound traffic
@@ -83,6 +83,7 @@ networking_definitions = {
           bandwidth_in_mbps     = "" //The bandwidth of the ExpressRoute
           tier                  = "" //The tier of ExpressRoute (standard or premium)
           family                = "" //The data plan, either MeteredData or Unlimited
+          gateway_regions = [""] //Regions to connect ExpressRoute Circuits to
         }
       }
     }

@@ -16,7 +16,7 @@ module "resource_groups" {
 module "express_routes" {
   for_each               = var.networking_definitions
   source                 = "./modules/express_route_circuit"
-  resource_group_name    = module.resource_groups[each.key].combined.vpn_resource_group.name
+  resource_group_name    = module.resource_groups[each.key].combined.express_route_resource_group.name
   location               = each.key
   networking_definitions = var.networking_definitions
   tags                   = var.tags.common_tags
@@ -34,10 +34,12 @@ module "palo_hub" {
 }
 
 module "vpns" {
-  for_each               = var.networking_definitions
-  source                 = "./modules/local_network_gateway"
-  resource_group_name    = module.resource_groups[each.key].combined.vpn_resource_group.name
-  location               = each.key
-  networking_definitions = var.networking_definitions
-  tags                   = var.tags.common_tags
+  for_each                = var.networking_definitions
+  source                  = "./modules/local_network_gateway"
+  resource_group_name     = module.resource_groups[each.key].combined.networking_resource_group.name
+  location                = each.key
+  networking_definitions  = var.networking_definitions
+  tags                    = var.tags.common_tags
+  management_pip_prefixes = module.palo_hub[each.key].management_pip_prefixes
+  subnets                 = module.palo_hub[each.key].subnets
 }
