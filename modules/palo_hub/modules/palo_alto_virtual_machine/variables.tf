@@ -13,7 +13,7 @@ variable "palo_local_password" {}
 variable "panorama_server_list" {}
 
 variable "production_pip_prefixes" {
-    default = ""
+  default = ""
 }
 
 variable "management_pip_prefixes" {}

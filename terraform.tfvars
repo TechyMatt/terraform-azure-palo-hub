@@ -93,7 +93,7 @@ networking_definitions = {
         pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
       }
     }
-    "express_route_gateway_sku" = "ERGw1Az"
+    "express_route_gateway_sku" = "Standard"
     "express_routes" = {
       "ER-to-Chicago-Production" = {
         service_provider_name = "Megaport"
@@ -188,25 +188,25 @@ networking_definitions = {
       "EUS2-VPN-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
-          bgp_settings = {
-            asn = "" 
-            bgp_peering_address = "" 
-            peer_weight = ""
-          }
-          "pre_shared_key"  = "test123"
+        bgp_settings = {
+          asn                 = ""
+          bgp_peering_address = ""
+          peer_weight         = ""
+        }
+        "pre_shared_key" = "test123"
       }
       "EUS2-VPN-Management-DR" = {
         gateway_address = "1.1.1.1"
         address_space   = ["192.168.0.0/24"]
-          bgp_settings = {
-            asn = "" 
-            bgp_peering_address = "" 
-            peer_weight = ""
-          }
-          "pre_shared_key"  = "test123"
+        bgp_settings = {
+          asn                 = ""
+          bgp_peering_address = ""
+          peer_weight         = ""
+        }
+        "pre_shared_key" = "test123"
       }
     }
-    "express_route_gateway_sku" = "ERGw1Az"
-    "express_routes" = {}
+    "express_route_gateway_sku" = "Standard"
+    "express_routes"            = {}
   }
 }

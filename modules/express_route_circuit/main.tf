@@ -28,3 +28,11 @@ resource "azurerm_express_route_circuit_authorization" "local" {
   express_route_circuit_name = azurerm_express_route_circuit.local[each.key].name
   resource_group_name        = var.resource_group_name
 }
+
+output "circuit_authorizaiton" {
+  value = azurerm_express_route_circuit_authorization.local
+}
+
+output "circuit" {
+  value = azurerm_express_route_circuit.local
+}

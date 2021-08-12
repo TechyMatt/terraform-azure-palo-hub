@@ -43,3 +43,15 @@ module "vpns" {
   management_pip_prefixes = module.palo_hub[each.key].management_pip_prefixes
   subnets                 = module.palo_hub[each.key].subnets
 }
+
+module "express_route_gateway" {
+  for_each                = var.networking_definitions
+  source                  = "./modules/express_route_virtual_network_gateway"
+  resource_group_name     = module.resource_groups[each.key].combined.networking_resource_group.name
+  location                = each.key
+  networking_definitions  = var.networking_definitions
+  tags                    = var.tags.common_tags
+  management_pip_prefixes = module.palo_hub[each.key].management_pip_prefixes
+  subnets                 = module.palo_hub[each.key].subnets
+  express_route_circuits  = module.express_routes
+}

@@ -11,7 +11,7 @@ variable "subnets" {}
 variable "management_pip_prefixes" {}
 
 locals {
-  vpns = var.networking_definitions[var.location].vpns
+  vpns            = var.networking_definitions[var.location].vpns
   vpn_gateway_sku = var.networking_definitions[var.location].vpn_gateway_sku
 
   region_shortcode = var.networking_definitions[var.location].region_abbreviation
@@ -35,7 +35,7 @@ resource "azurerm_public_ip" "local" {
   resource_group_name = var.resource_group_name
   location            = var.location
   allocation_method   = "Dynamic"
-  sku = "Basic"
+  sku                 = "Basic"
 
   tags = var.tags
 }
@@ -49,7 +49,7 @@ resource "azurerm_virtual_network_gateway" "local" {
   vpn_type = "RouteBased"
 
   active_active = false
-  enable_bgp    = false
+  enable_bgp    = true
   sku           = local.vpn_gateway_sku
 
   ip_configuration {
