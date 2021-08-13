@@ -9,30 +9,19 @@ variable "express_route_circuits" {}
 locals {
   express_routes            = var.networking_definitions[var.location].express_routes
   express_route_gateway_sku = var.networking_definitions[var.location].express_route_gateway_sku
-
+  express_route_connections = var.networking_definitions[var.location].express_route_connections
+  //express_route_circuits = flatten(var.express_route_circuits)
   region_shortcode = var.networking_definitions[var.location].region_abbreviation
 }
-
-/*
-locals {
- express_route_circuits = flatten([
-    for role, scopes in var.role_assignments : [
-      for scope in scopes : {
-        role  = role
-        scope = scope
-      }
-    ]
-  ])
-}
-*/
 
 resource "azurerm_public_ip" "express_route" {
   name                = "${local.region_shortcode}-expressroute-pip"
   location            = var.location
   resource_group_name = var.resource_group_name
-
-  allocation_method = "Dynamic"
   tags              = var.tags
+
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_virtual_network_gateway" "express_route" {
@@ -56,10 +45,7 @@ resource "azurerm_virtual_network_gateway" "express_route" {
 
 /*
 resource "azurerm_virtual_network_gateway_connection" "local" {
-  for_each = {
-    for name, user in var.express_route_circuits : name => user
-    if user.ssh_public_key != ""
-  }
+  for_each = toset(local.express_route_connections)
   name                = each.key
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -67,8 +53,9 @@ resource "azurerm_virtual_network_gateway_connection" "local" {
   type                       = "ExpressRoute"
   virtual_network_gateway_id = azurerm_virtual_network_gateway.local.id
   authorization_key = 
-  express_route_circuit_id
+  express_route_circuit_id = 
 
   shared_key = each.value.pre_shared_key
 }
-*/
+
+ */

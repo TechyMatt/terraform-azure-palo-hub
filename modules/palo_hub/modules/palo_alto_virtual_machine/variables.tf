@@ -17,3 +17,7 @@ variable "production_pip_prefixes" {
 }
 
 variable "management_pip_prefixes" {}
+
+variable "deploy_palo_vms" {
+    default = true
+}

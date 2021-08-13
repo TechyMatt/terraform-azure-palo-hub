@@ -79,21 +79,23 @@ networking_definitions = {
         }
       }
     }
-    "vpn_gateway_sku" = "VpnGw1"
+    "vpn_gateway_sku" = "VpnGw1AZ"
+    "vpn_gateway_asn" = "65515"
     "vpns" = {
       "CUS-VPN-DR" = {
         gateway_address = "1.1.1.1"
-        address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
+        address_space   = []
         pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
 
       }
       "CUS-VPN-Management-DR" = {
         gateway_address = "1.1.1.1"
-        address_space   = ["192.168.0.0/24"]
+        address_space   = []
         pre_shared_key  = "test123" //The pre-shared key of the IPSec tunnel
       }
     }
-    "express_route_gateway_sku" = "Standard"
+    "express_route_gateway_sku" = "ErGw1AZ"
+    "express_route_connections" = ["ER-to-Chicago-Production","ER-to-Chicago-Management"]
     "express_routes" = {
       "ER-to-Chicago-Production" = {
         service_provider_name = "Megaport"
@@ -101,10 +103,6 @@ networking_definitions = {
         bandwidth_in_mbps     = "200"
         tier                  = "Standard"
         family                = "MeteredData"
-        gateway_regions = [
-          "Central US",
-          "East US2"
-        ]
       }
       "ER-to-Chicago-Management" = {
         service_provider_name = "Megaport"
@@ -112,10 +110,6 @@ networking_definitions = {
         bandwidth_in_mbps     = "50"
         tier                  = "Standard"
         family                = "MeteredData"
-        gateway_regions = [
-          "Central US",
-          "East US2"
-        ]
       }
     }
   }
@@ -183,7 +177,8 @@ networking_definitions = {
         }
       }
     }
-    "vpn_gateway_sku" = "VpnGw1"
+    "vpn_gateway_sku" = "VpnGw1AZ"
+    "vpn_gateway_asn" = "65515"
     "vpns" = {
       "EUS2-VPN-DR" = {
         gateway_address = "1.1.1.1"
@@ -206,7 +201,10 @@ networking_definitions = {
         "pre_shared_key" = "test123"
       }
     }
-    "express_route_gateway_sku" = "Standard"
+    "express_route_gateway_sku" = "ErGw1AZ"
+    "express_route_connections" = ["ER-to-Chicago-Production","ER-to-Chicago-Management"]
     "express_routes"            = {}
   }
 }
+
+deploy_palo_vms = false

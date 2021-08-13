@@ -19,3 +19,7 @@ variable "location" {}
 variable "panorama_server_list" {}
 
 variable "resource_groups" {}
+
+variable "deploy_palo_vms" {
+  default = true
+}

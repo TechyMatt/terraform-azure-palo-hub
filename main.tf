@@ -31,6 +31,7 @@ module "palo_hub" {
   panorama_server_list   = var.panorama_server_list
   resource_groups        = module.resource_groups[each.key].combined
   tags                   = var.tags
+  deploy_palo_vms = var.deploy_palo_vms
 }
 
 module "vpns" {
