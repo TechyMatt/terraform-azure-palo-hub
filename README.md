@@ -1,6 +1,6 @@
 # Terrform Repository for deploying PaloAlto NVAs into Azure Hubs across multiple regions
 
-## Architecture history History
+## Architecture History
 
 This code example uses the Transit VNet model located within the Palo Alto reference architecture available at the [Securing Applications in Azure](https://www.paloaltonetworks.com/apps/pan/public/downloadResource?pagePath=/content/pan/en_US/resources/guides/azure-architecture-guide) as the core pattern, however extends to include bootstrapping and other base requirements for a landing zone in Azure, including ExpressRoutes and IPSec VPNs.
 
@@ -15,7 +15,7 @@ To provide consistency for connectivity, a /28 of Public IP prefexis is provisio
 ## Deployment pre-requisits
 
 - The user executing the script needs to have a minimum of Contributor level access to the target subscription. This is due to the marketplace registration resource.
-- Any regions can be chosen, however the code requires that the region supports multiple zones, not just availability sets.
+- Any regions can be chosen, however the code requires that the region supports multiple zones, not availability sets.
 - Connectivity to Panorama Server. If leveraging the ExpressRoute to connect to Panorama then you may need to comment out the resource deployment whilst pending the Circuit Provider provisioning.
   
 ## Usage instructions
