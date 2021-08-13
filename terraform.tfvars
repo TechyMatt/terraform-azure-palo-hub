@@ -182,7 +182,7 @@ networking_definitions = {
     "vpns" = {
       "EUS2-VPN-DR" = {
         gateway_address = "1.1.1.1"
-        address_space   = ["0.0.0.0/1", "128.0.0.0/1"]
+        address_space   = []
         bgp_settings = {
           asn                 = ""
           bgp_peering_address = ""
@@ -192,7 +192,7 @@ networking_definitions = {
       }
       "EUS2-VPN-Management-DR" = {
         gateway_address = "1.1.1.1"
-        address_space   = ["192.168.0.0/24"]
+        address_space   = []
         bgp_settings = {
           asn                 = ""
           bgp_peering_address = ""

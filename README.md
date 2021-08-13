@@ -6,6 +6,8 @@ This code example uses the Transit VNet model located within the Palo Alto refer
 
 ![PaloAlto Transit Architecture](images/Palo_Reference_Architecture.png?raw=true "PaloAlto Transit Architecture")
 
+**Important Note** This solution leverages Availability Zones through, as such you must only choose regions that support AZs. A full list can be found [here](https://docs.microsoft.com/en-us/azure/availability-zones/az-region#azure-regions-with-availability-zones).
+
 ## Overview of deployment
 
 This terraform workspace by default deploys a dual region setup within Azure (Central US & East US 2) deploying seperate Inbound and Outbound East West Palo Altos. The Palo Alto devices are deployed using bootstrapping leveraging Cloud-Init and documentation around that can be located at the [Palo Alto Documentation for Cloud Init](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/create-the-init-cfgtxt-file/sample-init-cfgtxt-file.html#id114bde92-3176-4c7c-a68a-eadfff80cb29). Settings for the Bootstrapping can be located at the [Palo Alto Bootstrap settings](https://docs.paloaltonetworks.com/vm-series/10-0/vm-series-deployment/bootstrap-the-vm-series-firewall/bootstrap-the-vm-series-firewall-in-azure.html).
@@ -17,10 +19,19 @@ To provide consistency for connectivity, a /28 of Public IP prefexis is provisio
 - The user executing the script needs to have a minimum of Contributor level access to the target subscription. This is due to the marketplace registration resource.
 - Any regions can be chosen, however the code requires that the region supports multiple zones, not availability sets.
 - Connectivity to Panorama Server. If leveraging the ExpressRoute to connect to Panorama then you may need to comment out the resource deployment whilst pending the Circuit Provider provisioning.
-  
-## Usage instructions
 
-The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. A template of a new region block can be found here. The below documents each field, however due to the inline comments should not be copied and pasted. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file
+## Terraform Variables
+
+The configuration is controlled by passing in variables either using the command line, or through a .tfvars file. 
+
+The following additional variables are configurable:
+
+Variable | Description | Default | Required?
+---|---|---| ---
+deploy_palo_vms | If set to false the palo alto VMs won't be deployed, however the interfaces will be. This is useful if needing connectivity in place before the bootstrap. | true | No
+panorama_server_list | A list of Panorama servers to pass into the bootstrap. If set to host names, ensure that DNS resolution is in place to allow lookup. | null | Yes
+tags | A map of tags to be deployed. The script expects a nested map for common_tags and compute_tags. The common_tags will apply to all resources, any compute resource will receive both common_tags and compute tags. | null | Yes
+network_definitions | A map containing a single or multiple regions with all the network definitions. The below documents value required in the map. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file. | null | Yes
 
 ```terraform
 networking_definitions = {
@@ -64,6 +75,8 @@ networking_definitions = {
           }
         }
       }
+        "vpn_gateway_sku" = "" //The SKU size of the VPN
+        "vpn_gateway_asn" = "" //The ASN number to allocate to the VPN endpoint, defaults to 65515
       "vpns" = { //This section contains the IPSec VPNs to be deployed. In the event no VPNs are required for this region leave {}
         "" = { //The name of the VPN
           gateway_address = "" //The destination address to connect to
