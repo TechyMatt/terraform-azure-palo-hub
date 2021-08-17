@@ -31,8 +31,6 @@ resource "azurerm_virtual_network_gateway" "express_route" {
 
   type = "ExpressRoute"
 
-  enable_bgp = true
-
   sku = local.express_route_gateway_sku
 
   ip_configuration {

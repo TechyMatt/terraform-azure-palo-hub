@@ -29,7 +29,8 @@ The following additional variables are configurable:
 Variable | Description | Default | Required?
 ---|---|---| ---
 deploy_palo_vms | If set to false the palo alto VMs won't be deployed, however the interfaces will be. This is useful if needing connectivity in place before the bootstrap. | true | No
-connect_er_circuits_to_gateway | This setting controls if the ExpressRoute circuits should be connected to the ExpressRoute Gateways. If this option is True then the circuits must be in a provisioned state. | true | No
+connect_er_circuits_to_gateway | This setting controls if the ExpressRoute circuits should be connected to the ExpressRoute Gateways. If this option is True then the circuits must be in a provisioned state. | false | No
+configure_er_private_peering | This setting controls if the ExpressRoute PrivatePeering should be configured on the ExpressRoute Circuits. If this option is True then the circuits must be in a provisioned state. | false | No
 panorama_server_list | A list of Panorama servers to pass into the bootstrap. If set to host names, ensure that DNS resolution is in place to allow lookup. | null | Yes
 tags | A map of tags to be deployed. The script expects a nested map for common_tags and compute_tags. The common_tags will apply to all resources, any compute resource will receive both common_tags and compute tags. | null | Yes
 network_definitions | A map containing a single or multiple regions with all the network definitions. The below documents value required in the map. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file. | null | Yes
@@ -94,6 +95,7 @@ networking_definitions = {
         }
       }
       "express_route_gateway_sku = "" https://docs.microsoft.com/en-us/azure/expressroute/expressroute-about-virtual-network-gateways#gwsku
+ express_route_gateway_asn = "65515" //https://docs.microsoft.com/en-us/azure/expressroute/expressroute-routing#autonomous-system-numbers
     "express_route_connections" = [""] //A list of ExpressRoute circuits to connect the Express Route gateway into.
     }
 }
@@ -109,6 +111,13 @@ express_route_definitions = { //This section contains the Express Routes.
           bandwidth_in_mbps     = "" //The bandwidth of the ExpressRoute
           tier                  = "" //The tier of ExpressRoute (standard or premium)
           family                = "" //The data plan, either MeteredData or Unlimited
+          azure_private_peering     = { //https://docs.microsoft.com/en-us/azure/expressroute/expressroute-howto-routing-portal-resource-manager#to-create-azure-private-peering
+            peer_asn = "" //The Either a 16-bit or a 32-bit ASN. Can either be public or private.
+            ipv4_primary_subnet = "" //A /30 subnet for the primary link.
+            ipv4_secondary_submet = "" //A /30 subnet for the secondary link.
+            vlan_id = "" //A valid VLAN ID to establish this peering on.
+            shared_key = "" //(Optional) The shared key. Can be a maximum of 25 characters
+          }
         }
       }
 ```

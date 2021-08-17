@@ -22,5 +22,10 @@ variable "deploy_palo_vms" {
 
 variable "connect_er_circuits_to_gateway" {
   description = "This setting controls if the ExpressRoute circuits should be connected to the ExpressRoute Gateways. If this option is True then the circuits must be in a provisioned state."
-  default     = true
+  default     = false
+}
+
+variable "configure_er_private_peering" {
+  description = "This setting controls if the ExpressRoute PrivatePeering should be configured on the ExpressRoute Circuits. If this option is True then the circuits must be in a provisioned state."
+  default = false
 }

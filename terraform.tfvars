@@ -79,6 +79,56 @@ networking_definitions = {
         }
       }
     }
+    "inbound_ports" = {
+      "https_adc" = {
+        "frontend_port" = "443"
+        "backend_port" = "443"
+        "probe" = "443"
+        "backend_ip" = ["10.0.3.5","10.0.3.6"]
+        }
+    }
+    "untrust_nsg_rules" = {
+      "https_adc" = {
+        priority = "200"
+        source = ["Internet"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = ""
+        protocol = ""
+      }
+      "load_balancer_health_check" = {
+        priority = "205"
+        source = ["AzureLoadBalancer"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "443"
+        protocol = "TCP"
+      }
+    }
+    "management_nsg_rules" = {
+      "pano_to_palo_https" = {
+        priority = "200"
+        source = ["192.168.0.1"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "443"
+        protocol = "TCP"
+        action = "allow"
+      }
+      "pano_to_palo_ssh" = {
+        priority = "205"
+        source = ["192.168.0.1"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "22"
+        protocol = "TCP"
+        action = "allow"
+      }
+      "default_deny" = {
+        priority = "4096"
+        source = ["*"]
+        destination = ["*"]
+        port = "*"
+        protocol = "*"
+        action = "deny"
+      }
+    }
     "vpn_gateway_sku" = "VpnGw1AZ"
     "vpn_gateway_asn" = "65515"
     "vpns" = {
@@ -161,6 +211,56 @@ networking_definitions = {
         }
       }
     }
+    "inbound_load_balancer_ports" = {
+      "https_adc" = {
+        "frontend_port" = "443"
+        "backend_port" = "443"
+        "probe" = "443"
+        "backend_ip" = ["10.1.3.5","10.1.3.6"]
+        }
+    }
+    "untrust_nsg_rules" = {
+      "https_adc" = {
+        priority = "200"
+        source = ["Internet"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = ""
+        protocol = ""
+      }
+      "load_balancer_health_check" = {
+        priority = "205"
+        source = ["AzureLoadBalancer"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "443"
+        protocol = "TCP"
+      }
+    }
+    "management_nsg_rules" = {
+      "pano_to_palo_https" = {
+        priority = "200"
+        source = ["192.168.0.1"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "443"
+        protocol = "TCP"
+        action = "allow"
+      }
+      "pano_to_palo_ssh" = {
+        priority = "205"
+        source = ["192.168.0.1"]
+        destination = ["10.1.3.5","10.1.3.6"]
+        port = "22"
+        protocol = "TCP"
+        action = "allow"
+      }
+      "default_deny" = {
+        priority = "4096"
+        source = ["*"]
+        destination = ["*"]
+        port = "*"
+        protocol = "*"
+        action = "deny"
+      }
+    }
     "vpn_gateway_sku" = "VpnGw1AZ"
     "vpn_gateway_asn" = "65515"
     "vpns" = {
@@ -198,6 +298,13 @@ express_route_definitions = {
     bandwidth_in_mbps     = "200"
     tier                  = "Standard"
     family                = "MeteredData"
+    azure_private_peering     = {
+      peer_asn = "394749"
+      ipv4_primary_subnet = "192.168.15.16/30"
+      ipv4_secondary_submet = "192.168.15.20/30"
+      vlan_id = "155"
+      shared_key = ""
+    }
   }
   "Chicago-to-Chicago-Management" = {
     azure_region          = "Central US"
@@ -206,9 +313,18 @@ express_route_definitions = {
     bandwidth_in_mbps     = "50"
     tier                  = "Standard"
     family                = "MeteredData"
+    azure_private_peering     = {
+      peer_asn = "394789"
+      ipv4_primary_subnet = "192.168.16.16/30"
+      ipv4_secondary_submet = "192.168.16.20/30"
+      vlan_id = "160"
+      shared_key = ""
+    }
   }
 }
 
 deploy_palo_vms = false
 
 connect_er_circuits_to_gateway = false
+
+configure_er_private_peering = false

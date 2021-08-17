@@ -21,6 +21,7 @@ module "express_routes" {
   express_route_definitions = var.express_route_definitions[each.key]
   tags                      = var.tags.common_tags
   name                      = each.key
+  configure_er_private_peering = var.configure_er_private_peering
 }
 
 //If pending ExpressRoute enablement, comment out the following resources until provisioned.

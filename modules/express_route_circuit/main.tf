@@ -3,6 +3,7 @@ variable "resource_group_name" {}
 variable "location" {}
 variable "express_route_definitions" {}
 variable "name" {}
+variable "configure_er_private_peering" {}
 
 resource "azurerm_express_route_circuit" "local" {
   name                  = var.name
@@ -20,6 +21,18 @@ resource "azurerm_express_route_circuit" "local" {
   allow_classic_operations = false
 
   tags = var.tags
+}
+
+resource "azurerm_express_route_circuit_peering" "local" {
+  count = var.configure_er_private_peering ? 1 : 0
+  peering_type                  = "AzurePrivatePeering"
+  express_route_circuit_name    = azurerm_express_route_circuit.local.name
+  resource_group_name   = var.resource_group_name
+  peer_asn                      = var.express_route_definitions.azure_private_peering.peer_asn
+  primary_peer_address_prefix   = var.express_route_definitions.azure_private_peering.ipv4_primary_subnet
+  secondary_peer_address_prefix = var.express_route_definitions.azure_private_peering.ipv4_secondary_submet
+  vlan_id                       = var.express_route_definitions.azure_private_peering.vlan_id
+  shared_key  = var.express_route_definitions.azure_private_peering.shared_key !=  "" ? var.express_route_definitions.azure_private_peering.shared_key : null
 }
 
 output "circuit" {
