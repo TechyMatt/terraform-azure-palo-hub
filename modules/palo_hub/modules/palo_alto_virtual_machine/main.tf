@@ -23,11 +23,17 @@ resource "azurerm_network_interface" "untrust" {
   resource_group_name           = var.resource_group_name
   enable_accelerated_networking = true
 
-  ip_configuration {
-    name                          = "ifconfig0"
-    subnet_id                     = var.network_details.untrust.id
-    private_ip_address_allocation = "static"
-    private_ip_address            = each.value.untrust_ip
+  dynamic "ip_configuration" {
+  for_each                        = { for k, v in toset(each.value.untrust_ip) : k => k }
+        
+      content {
+        primary = each.value.untrust_ip[0] == ip_configuration.value ? true : false
+        name                          = "interface_${ip_configuration.key}"
+        subnet_id                     = var.network_details.untrust.id
+        private_ip_address_allocation = "static"
+        private_ip_address            = ip_configuration.value
+      }
+    
   }
 
   tags = var.tags

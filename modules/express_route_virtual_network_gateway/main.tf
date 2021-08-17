@@ -53,7 +53,7 @@ resource "azurerm_express_route_circuit_authorization" "local" {
 
 resource "azurerm_virtual_network_gateway_connection" "local" {
 
-  for_each = { for k, v in toset(local.express_route_connections) : k => v if var.connect_er_circuits_to_gateway }
+  for_each            = { for k, v in toset(local.express_route_connections) : k => v if var.connect_er_circuits_to_gateway }
   name                = each.key
   resource_group_name = var.resource_group_name
   location            = var.location
