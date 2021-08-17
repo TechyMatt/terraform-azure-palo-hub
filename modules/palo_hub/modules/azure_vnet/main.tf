@@ -10,8 +10,6 @@ resource "azurerm_virtual_network" "local" {
   tags = var.tags
 }
 
-
-
 resource "azurerm_subnet" "gatewaysubnet" {
   name                 = "GatewaySubnet"
   resource_group_name  = var.resource_group_name
@@ -38,6 +36,19 @@ resource "azurerm_subnet" "trust" {
   address_prefixes     = [var.network_definitions.subnet_trust]
 }
 
+resource "azurerm_network_security_group" "trust" {
+  name                = "${var.vnet_name}_trust"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  tags = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "trust" {
+  subnet_id                 = azurerm_subnet.trust.id
+  network_security_group_id = azurerm_network_security_group.trust.id
+}
+
 resource "azurerm_route_table" "trust" {
   name                          = "trust"
   location                      = var.location
@@ -57,6 +68,20 @@ resource "azurerm_subnet" "untrust" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.local.name
   address_prefixes     = [var.network_definitions.subnet_untrust]
+}
+
+
+resource "azurerm_network_security_group" "untrust" {
+  name                = "${var.vnet_name}_untrust"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  tags = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "untrust" {
+  subnet_id                 = azurerm_subnet.untrust.id
+  network_security_group_id = azurerm_network_security_group.untrust.id
 }
 
 resource "azurerm_route_table" "untrust" {
@@ -80,6 +105,21 @@ resource "azurerm_subnet" "management" {
   address_prefixes     = [var.network_definitions.subnet_management]
   service_endpoints    = ["Microsoft.Storage"]
 }
+
+
+resource "azurerm_network_security_group" "management" {
+  name                = "${var.vnet_name}_management"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  tags = var.tags
+}
+
+resource "azurerm_subnet_network_security_group_association" "management" {
+  subnet_id                 = azurerm_subnet.management.id
+  network_security_group_id = azurerm_network_security_group.management.id
+}
+
 
 resource "azurerm_route_table" "management" {
   name                = "management"

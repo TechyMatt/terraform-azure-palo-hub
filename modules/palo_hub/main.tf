@@ -36,7 +36,7 @@ module "palo_inbound" {
   palo_local_password     = var.palo_local_password
   panorama_server_list    = var.panorama_server_list
   management_pip_prefixes = azurerm_public_ip_prefix.management
-  deploy_palo_vms = var.deploy_palo_vms
+  deploy_palo_vms         = var.deploy_palo_vms
 }
 
 module "palo_obew" {
@@ -52,7 +52,7 @@ module "palo_obew" {
   panorama_server_list    = var.panorama_server_list
   production_pip_prefixes = azurerm_public_ip_prefix.production
   management_pip_prefixes = azurerm_public_ip_prefix.management
-  deploy_palo_vms = var.deploy_palo_vms
+  deploy_palo_vms         = var.deploy_palo_vms
 }
 
 //used for provisioning a public IP subnet for inbound and outbound user traffic.

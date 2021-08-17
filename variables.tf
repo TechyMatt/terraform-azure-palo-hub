@@ -6,6 +6,10 @@ variable "networking_definitions" {
   description = "The map of all the region networks. Instructions on formatting can be found in README.md"
 }
 
+variable "express_route_definitions" {
+  description = "The map of all express route circuitst to provision. Instructions on formatting can be found in README.md"
+}
+
 variable "panorama_server_list" {
   description = "The FQDN or IP address of the primary Panorama server"
   type        = list(any)
@@ -13,5 +17,10 @@ variable "panorama_server_list" {
 
 variable "deploy_palo_vms" {
   description = "If this is set to false, all resources are deployed except for the Palo Alto Virtual Machines"
+  default     = true
+}
+
+variable "connect_er_circuits_to_gateway" {
+  description = "This setting controls if the ExpressRoute circuits should be connected to the ExpressRoute Gateways. If this option is True then the circuits must be in a provisioned state."
   default = true
 }

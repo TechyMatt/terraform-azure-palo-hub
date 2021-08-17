@@ -1,20 +1,20 @@
 variable "tags" {}
 variable "resource_group_name" {}
 variable "location" {}
-variable "networking_definitions" {}
+variable "express_route_definitions" {}
+variable "name" {}
 
 resource "azurerm_express_route_circuit" "local" {
-  for_each              = var.networking_definitions[var.location].express_routes
-  name                  = each.key
+  name                  = var.name
   resource_group_name   = var.resource_group_name
   location              = var.location
-  service_provider_name = each.value.service_provider_name
-  peering_location      = each.value.peering_location
-  bandwidth_in_mbps     = each.value.bandwidth_in_mbps
+  service_provider_name = var.express_route_definitions.service_provider_name
+  peering_location      = var.express_route_definitions.peering_location
+  bandwidth_in_mbps     = var.express_route_definitions.bandwidth_in_mbps
 
   sku {
-    tier   = each.value.tier
-    family = each.value.family
+    tier   = var.express_route_definitions.tier
+    family = var.express_route_definitions.family
   }
 
   allow_classic_operations = false
@@ -22,17 +22,10 @@ resource "azurerm_express_route_circuit" "local" {
   tags = var.tags
 }
 
-resource "azurerm_express_route_circuit_authorization" "local" {
-  for_each                   = var.networking_definitions[var.location].express_routes
-  name                       = "${each.key}-Auth"
-  express_route_circuit_name = azurerm_express_route_circuit.local[each.key].name
-  resource_group_name        = var.resource_group_name
-}
-
-output "circuit_authorizaiton" {
-  value = azurerm_express_route_circuit_authorization.local
-}
-
 output "circuit" {
   value = azurerm_express_route_circuit.local
+}
+
+output "resource_group_name" {
+  value = var.resource_group_name
 }

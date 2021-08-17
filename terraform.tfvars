@@ -95,23 +95,7 @@ networking_definitions = {
       }
     }
     "express_route_gateway_sku" = "ErGw1AZ"
-    "express_route_connections" = ["ER-to-Chicago-Production","ER-to-Chicago-Management"]
-    "express_routes" = {
-      "ER-to-Chicago-Production" = {
-        service_provider_name = "Megaport"
-        peering_location      = "Chicago"
-        bandwidth_in_mbps     = "200"
-        tier                  = "Standard"
-        family                = "MeteredData"
-      }
-      "ER-to-Chicago-Management" = {
-        service_provider_name = "Megaport"
-        peering_location      = "Chicago"
-        bandwidth_in_mbps     = "50"
-        tier                  = "Standard"
-        family                = "MeteredData"
-      }
-    }
+    "express_route_connections" = ["Chicago-to-Chicago-Production", "Chicago-to-Chicago-Management"]
   }
   "East US2" = {
     "region_abbreviation"    = "EUS2"
@@ -202,9 +186,29 @@ networking_definitions = {
       }
     }
     "express_route_gateway_sku" = "ErGw1AZ"
-    "express_route_connections" = ["ER-to-Chicago-Production","ER-to-Chicago-Management"]
-    "express_routes"            = {}
+    "express_route_connections" = ["Chicago-to-Chicago-Production", "Chicago-to-Chicago-Management"]
+  }
+}
+
+express_route_definitions = {
+  "Chicago-to-Chicago-Production" = {
+    azure_region          = "Central US"
+    service_provider_name = "Megaport"
+    peering_location      = "Chicago"
+    bandwidth_in_mbps     = "200"
+    tier                  = "Standard"
+    family                = "MeteredData"
+  }
+  "Chicago-to-Chicago-Management" = {
+    azure_region          = "Central US"
+    service_provider_name = "Megaport"
+    peering_location      = "Chicago"
+    bandwidth_in_mbps     = "50"
+    tier                  = "Standard"
+    family                = "MeteredData"
   }
 }
 
 deploy_palo_vms = false
+
+connect_er_circuits_to_gateway = false

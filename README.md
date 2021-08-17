@@ -29,11 +29,15 @@ The following additional variables are configurable:
 Variable | Description | Default | Required?
 ---|---|---| ---
 deploy_palo_vms | If set to false the palo alto VMs won't be deployed, however the interfaces will be. This is useful if needing connectivity in place before the bootstrap. | true | No
+connect_er_circuits_to_gateway | This setting controls if the ExpressRoute circuits should be connected to the ExpressRoute Gateways. If this option is True then the circuits must be in a provisioned state. | true | No
 panorama_server_list | A list of Panorama servers to pass into the bootstrap. If set to host names, ensure that DNS resolution is in place to allow lookup. | null | Yes
 tags | A map of tags to be deployed. The script expects a nested map for common_tags and compute_tags. The common_tags will apply to all resources, any compute resource will receive both common_tags and compute tags. | null | Yes
 network_definitions | A map containing a single or multiple regions with all the network definitions. The below documents value required in the map. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file. | null | Yes
+express_route_definitions | A map containing the Express Route circuits to be deployed. The ExpressRoute Gateways are deployed within the associated region's network_definitions. A complete sample can be located within the [terraform.tfvars](terraform.tfvars) file. | null | Yes
 
-```terraform
+Detailed description of network_definitions map
+
+```terraform network_definitions
 networking_definitions = {
   "Central US" = { //This needs to be the name of the region to deploy workload
       "region_abbreviation"    = "" //This is a freeform abbreviation of the region
@@ -90,16 +94,21 @@ networking_definitions = {
         }
       }
       "express_route_gateway_sku = "" https://docs.microsoft.com/en-us/azure/expressroute/expressroute-about-virtual-network-gateways#gwsku
-      "express_routes" = { //This section contains the Express Routes. In the event no Express Routes are required for this region leave {}
+    "express_route_connections" = [""] //A list of ExpressRoute circuits to connect the Express Route gateway into.
+    }
+}
+```
+
+Detailed description of express_routes_gateway map
+
+```terraform express_route_gateways
+express_route_definitions = { //This section contains the Express Routes.
         "" = { //The name of the ExpressRoute
           service_provider_name = "" //The name of service provider, e.g. MegaPort
           peering_location      = "" //The peering location 
           bandwidth_in_mbps     = "" //The bandwidth of the ExpressRoute
           tier                  = "" //The tier of ExpressRoute (standard or premium)
           family                = "" //The data plan, either MeteredData or Unlimited
-          gateway_regions = [""] //Regions to connect ExpressRoute Circuits to
         }
       }
-    }
-}
 ```

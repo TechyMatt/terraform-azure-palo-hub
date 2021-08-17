@@ -50,7 +50,7 @@ resource "azurerm_network_interface" "management" {
 }
 
 resource "azurerm_linux_virtual_machine" "local" {
-  for_each = { for k, v in var.nva_details: k => v if var.deploy_palo_vms}
+  for_each                        = { for k, v in var.nva_details : k => v if var.deploy_palo_vms }
   name                            = each.key
   location                        = var.location
   resource_group_name             = var.resource_group_name
