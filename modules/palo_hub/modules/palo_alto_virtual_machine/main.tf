@@ -9,7 +9,7 @@ resource "azurerm_network_interface" "trust" {
   ip_configuration {
     name                          = "ifconfig0"
     subnet_id                     = var.network_details.trust.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = each.value.trust_ip
   }
 
@@ -24,21 +24,52 @@ resource "azurerm_network_interface" "untrust" {
   enable_accelerated_networking = true
 
   dynamic "ip_configuration" {
-  for_each                        = { for k, v in toset(each.value.untrust_ip) : k => k }
-        
-      content {
-        primary = each.value.untrust_ip[0] == ip_configuration.value ? true : false
-        name                          = "interface_${ip_configuration.key}"
-        subnet_id                     = var.network_details.untrust.id
-        private_ip_address_allocation = "static"
-        private_ip_address            = ip_configuration.value
-      }
-    
+    for_each = { for k, v in toset(each.value.untrust_ip) : k => k }
+
+    content {
+      primary                       = each.value.untrust_ip[0] == ip_configuration.value ? true : false
+      name                          = "interface_${ip_configuration.key}"
+      subnet_id                     = var.network_details.untrust.id
+      private_ip_address_allocation = "Static"
+      private_ip_address            = ip_configuration.value
+    }
+
   }
 
   tags = var.tags
 }
+/*
+locals {
 
+untrust_public_ip_list = flatten([
+  for nva, value in var.nva_details: nva => "untrust_ip" [
+    for untrust_ip in nva:  {
+      hostname = nva.value
+      ip = untrust_ip.value
+    }
+  ]
+
+])
+*/
+/*
+  untrust_public_ip_map = {
+    for obj in local.untrust_public_ip_list : obj.ip => obj
+  }
+  }
+*/
+
+/*
+resource "azurerm_public_ip" "untrust" {
+  for_each            = local.untrust_public_ip_map
+  name                = "${each.key}-untrust"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  public_ip_prefix_id = var.untrust_pip_prefixes.id
+
+  tags = var.tags
+}
+*/
 resource "azurerm_network_interface" "management" {
   for_each            = var.nva_details
   name                = "${each.key}-management"
@@ -48,7 +79,7 @@ resource "azurerm_network_interface" "management" {
   ip_configuration {
     name                          = "ifconfig0"
     subnet_id                     = var.network_details.management.id
-    private_ip_address_allocation = "static"
+    private_ip_address_allocation = "Static"
     private_ip_address            = each.value.management_ip
   }
 

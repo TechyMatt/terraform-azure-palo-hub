@@ -21,6 +21,8 @@ resource "azurerm_lb_backend_address_pool" "local" {
   name            = "PaloAltoNVAs"
 }
 
+//azurerm_lb_backend_address_pool_address configured in parent module
+
 resource "azurerm_lb_rule" "local" {
   resource_group_name            = var.resource_group_name
   loadbalancer_id                = azurerm_lb.local.id

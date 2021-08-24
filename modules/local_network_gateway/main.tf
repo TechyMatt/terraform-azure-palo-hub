@@ -8,8 +8,6 @@ variable "location" {}
 
 variable "subnets" {}
 
-variable "management_pip_prefixes" {}
-
 locals {
   vpns            = var.networking_definitions[var.location].vpns
   vpn_gateway_sku = var.networking_definitions[var.location].vpn_gateway_sku

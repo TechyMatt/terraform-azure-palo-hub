@@ -1,7 +1,6 @@
 variable "location" {}
 variable "resource_group_name" {}
 variable "subnets" {}
-variable "management_pip_prefixes" {}
 variable "networking_definitions" {}
 variable "tags" {}
 variable "express_route_circuits" {}

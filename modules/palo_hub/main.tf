@@ -35,8 +35,10 @@ module "palo_inbound" {
   palo_local_user         = var.palo_local_user
   palo_local_password     = var.palo_local_password
   panorama_server_list    = var.panorama_server_list
-  management_pip_prefixes = azurerm_public_ip_prefix.management
+  untrust_pip_prefixes = azurerm_public_ip_prefix.hub_ingress
   deploy_palo_vms         = var.deploy_palo_vms
+
+  depends_on = [module.vnet]
 }
 
 module "palo_obew" {
@@ -50,14 +52,21 @@ module "palo_obew" {
   palo_local_user         = var.palo_local_user
   palo_local_password     = var.palo_local_password
   panorama_server_list    = var.panorama_server_list
-  production_pip_prefixes = azurerm_public_ip_prefix.production
-  management_pip_prefixes = azurerm_public_ip_prefix.management
+  untrust_pip_prefixes = azurerm_public_ip_prefix.palo_obew
   deploy_palo_vms         = var.deploy_palo_vms
+
+  depends_on = [module.vnet]
 }
 
-//used for provisioning a public IP subnet for inbound and outbound user traffic.
-resource "azurerm_public_ip_prefix" "production" {
-  name                = "Hub-${local.region_shortcode}-production"
+locals {
+  palo_obew_public_ip_prefix_deployments   = 1
+  hub_inbound_public_ip_prefix_deployments = 1
+}
+
+//used for provisioning a public IP subnet for egress traffic.
+resource "azurerm_public_ip_prefix" "palo_obew" {
+  count               = local.palo_obew_public_ip_prefix_deployments
+  name                = "Hub-${local.region_shortcode}-Palo-OBEW-${count.index + 1}"
   location            = var.location
   resource_group_name = var.resource_groups.networking_resource_group.name
   availability_zone   = "Zone-Redundant"
@@ -66,19 +75,16 @@ resource "azurerm_public_ip_prefix" "production" {
   tags = var.tags.common_tags
 }
 
-//used for provisioning a public IP subnet for the management interfaces of the Palo Altos. By default no IPs will be allocated.
-resource "azurerm_public_ip_prefix" "management" {
-  name                = "Hub-${local.region_shortcode}-Management"
+//used for provisioning a public IP subnet for inbound traffic to the LB.
+resource "azurerm_public_ip_prefix" "hub_ingress" {
+  count               = local.hub_inbound_public_ip_prefix_deployments
+  name                = "Hub-${local.region_shortcode}-Hub-Ingress-${count.index + 1}"
   location            = var.location
   resource_group_name = var.resource_groups.networking_resource_group.name
   availability_zone   = "Zone-Redundant"
   prefix_length       = 28
 
   tags = var.tags.common_tags
-}
-
-output "management_pip_prefixes" {
-  value = azurerm_public_ip_prefix.management
 }
 
 module "trust_lb" {
@@ -89,6 +95,23 @@ module "trust_lb" {
   location               = var.location
   tags                   = var.tags.common_tags
   networking_definitions = local.networking_definitions
+
+  depends_on = [module.vnet]
+}
+
+
+module "inbound_load_balancer" {
+  source = "./modules/public_azure_load_balancer"
+  name                   = "InboundLB-${local.region_shortcode}"
+  network_details        = module.vnet.subnets
+  resource_group_name    = var.resource_groups.networking_resource_group.name
+  location               = var.location
+  tags                   = var.tags.common_tags
+  networking_definitions = local.networking_definitions
+  public_ip_prefix = azurerm_public_ip_prefix.hub_ingress[0].id
+
+depends_on = [module.palo_inbound, resource.azurerm_public_ip_prefix.hub_ingress]
+
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "obew" {
@@ -107,6 +130,7 @@ resource "azurerm_route" "trust" {
   address_prefix         = "0.0.0.0/0"
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = local.networking_definitions.trust_lb_ip
+  depends_on = [module.vnet]
 }
 
 resource "azurerm_route" "untrust" {
@@ -115,6 +139,7 @@ resource "azurerm_route" "untrust" {
   resource_group_name = var.resource_groups.networking_resource_group.name
   address_prefix      = "0.0.0.0/0"
   next_hop_type       = "internet"
+  depends_on = [module.vnet]
 }
 
 resource "azurerm_route" "management" {
@@ -123,6 +148,7 @@ resource "azurerm_route" "management" {
   resource_group_name = var.resource_groups.networking_resource_group.name
   address_prefix      = "0.0.0.0/0"
   next_hop_type       = "VirtualNetworkGateway"
+  depends_on = [module.vnet]
 }
 
 resource "azurerm_route" "gatewaysubnet" {
@@ -133,4 +159,5 @@ resource "azurerm_route" "gatewaysubnet" {
   address_prefix         = each.value
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = local.networking_definitions.trust_lb_ip
+  depends_on = [module.vnet]
 }

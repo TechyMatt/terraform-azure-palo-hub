@@ -27,5 +27,5 @@ variable "connect_er_circuits_to_gateway" {
 
 variable "configure_er_private_peering" {
   description = "This setting controls if the ExpressRoute PrivatePeering should be configured on the ExpressRoute Circuits. If this option is True then the circuits must be in a provisioned state."
-  default = false
+  default     = false
 }

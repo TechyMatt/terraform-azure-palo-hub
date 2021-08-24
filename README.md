@@ -95,7 +95,6 @@ networking_definitions = {
         }
       }
       "express_route_gateway_sku = "" https://docs.microsoft.com/en-us/azure/expressroute/expressroute-about-virtual-network-gateways#gwsku
- express_route_gateway_asn = "65515" //https://docs.microsoft.com/en-us/azure/expressroute/expressroute-routing#autonomous-system-numbers
     "express_route_connections" = [""] //A list of ExpressRoute circuits to connect the Express Route gateway into.
     }
 }
@@ -114,7 +113,7 @@ express_route_definitions = { //This section contains the Express Routes.
           azure_private_peering     = { //https://docs.microsoft.com/en-us/azure/expressroute/expressroute-howto-routing-portal-resource-manager#to-create-azure-private-peering
             peer_asn = "" //The Either a 16-bit or a 32-bit ASN. Can either be public or private.
             ipv4_primary_subnet = "" //A /30 subnet for the primary link.
-            ipv4_secondary_submet = "" //A /30 subnet for the secondary link.
+            ipv4_secondary_subnet = "" //A /30 subnet for the secondary link.
             vlan_id = "" //A valid VLAN ID to establish this peering on.
             shared_key = "" //(Optional) The shared key. Can be a maximum of 25 characters
           }
