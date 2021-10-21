@@ -7,6 +7,7 @@ resource "azurerm_resource_group" "example" {
 resource "azurerm_virtual_network" "example" {
   name                = "example-network"
   address_space       = ["10.2.0.0/16"]
+  dns_servers         = var.networking_definitions["Central US"].dns_servers
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   tags = var.tags.common_tags
@@ -77,7 +78,7 @@ resource "azurerm_virtual_network_peering" "peerSpokeToHub" {
   resource_group_name       = azurerm_resource_group.example.name
   virtual_network_name      = azurerm_virtual_network.example.name
   remote_virtual_network_id = module.palo_hub["Central US"].vnet.id
-  use_remote_gateways = true
+  //use_remote_gateways = true
   depends_on = [module.palo_hub]
 }
 
