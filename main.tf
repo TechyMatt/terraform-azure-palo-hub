@@ -22,7 +22,7 @@ module "express_routes" {
   tags                         = var.tags.common_tags
   name                         = each.key
   configure_er_private_peering = var.configure_er_private_peering
-  depends_on = [module.resource_groups]
+  depends_on                   = [module.resource_groups]
 }
 
 //If pending ExpressRoute enablement, comment out the following resources until provisioned.
@@ -38,7 +38,7 @@ module "palo_hub" {
 
   depends_on = [module.resource_groups]
 }
-
+/*
 module "vpns" {
   for_each                = var.networking_definitions
   source                  = "./modules/local_network_gateway"
@@ -64,3 +64,4 @@ module "express_route_gateway" {
 
   depends_on = [module.vpns]
 }
+*/

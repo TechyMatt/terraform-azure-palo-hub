@@ -32,44 +32,37 @@ resource "azurerm_network_interface" "untrust" {
       subnet_id                     = var.network_details.untrust.id
       private_ip_address_allocation = "Static"
       private_ip_address            = ip_configuration.value
+      public_ip_address_id          = var.interface_public_ip == true ? azurerm_public_ip.untrust[ip_configuration.value].id : ""
     }
 
   }
 
   tags = var.tags
+
+  depends_on = [azurerm_public_ip.untrust]
 }
-/*
+
 locals {
+  untrust_public_ip_list = flatten([
+    for nva, st in var.nva_details : [
+      for untrust_key in toset(st.untrust_ip) : {
+        untrust_ip = untrust_key
+      }
+    ]
+  ])
+}
 
-untrust_public_ip_list = flatten([
-  for nva, value in var.nva_details: nva => "untrust_ip" [
-    for untrust_ip in nva:  {
-      hostname = nva.value
-      ip = untrust_ip.value
-    }
-  ]
-
-])
-*/
-/*
-  untrust_public_ip_map = {
-    for obj in local.untrust_public_ip_list : obj.ip => obj
-  }
-  }
-*/
-
-/*
 resource "azurerm_public_ip" "untrust" {
-  for_each            = local.untrust_public_ip_map
+  for_each            = { for obj in local.untrust_public_ip_list : obj.untrust_ip => obj if var.interface_public_ip }
   name                = "${each.key}-untrust"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
-  public_ip_prefix_id = var.untrust_pip_prefixes.id
-
-  tags = var.tags
+  public_ip_prefix_id = var.untrust_pip_prefixes[0].id
+  tags                = var.tags
+  sku                 = "Standard"
 }
-*/
+
 resource "azurerm_network_interface" "management" {
   for_each            = var.nva_details
   name                = "${each.key}-management"

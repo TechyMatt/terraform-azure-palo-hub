@@ -25,35 +25,35 @@ output "subnets" {
 }
 
 module "palo_inbound" {
-  source                  = "./modules/palo_alto_virtual_machine"
-  network_details         = module.vnet.subnets
-  resource_group_name     = var.resource_groups.paloalto_resource_group.name
-  location                = var.location
-  tags                    = merge(var.tags.common_tags, var.tags.compute_tags)
-  nva_details             = local.networking_definitions["nva_configuration"]["inbound"]
-  vm_sku                  = var.palo_vm_sku
-  palo_local_user         = var.palo_local_user
-  palo_local_password     = var.palo_local_password
-  panorama_server_list    = var.panorama_server_list
+  source               = "./modules/palo_alto_virtual_machine"
+  network_details      = module.vnet.subnets
+  resource_group_name  = var.resource_groups.paloalto_resource_group.name
+  location             = var.location
+  tags                 = merge(var.tags.common_tags, var.tags.compute_tags)
+  nva_details          = local.networking_definitions["nva_configuration"]["inbound"]
+  vm_sku               = var.palo_vm_sku
+  palo_local_user      = var.palo_local_user
+  palo_local_password  = var.palo_local_password
+  panorama_server_list = var.panorama_server_list
   untrust_pip_prefixes = azurerm_public_ip_prefix.hub_ingress
-  deploy_palo_vms         = var.deploy_palo_vms
-
+  deploy_palo_vms      = var.deploy_palo_vms
+  interface_public_ip = false
   depends_on = [module.vnet]
 }
 
 module "palo_obew" {
-  source                  = "./modules/palo_alto_virtual_machine"
-  network_details         = module.vnet.subnets
-  resource_group_name     = var.resource_groups.paloalto_resource_group.name
-  location                = var.location
-  tags                    = merge(var.tags.common_tags, var.tags.compute_tags)
-  nva_details             = local.networking_definitions["nva_configuration"]["obew"]
-  vm_sku                  = var.palo_vm_sku
-  palo_local_user         = var.palo_local_user
-  palo_local_password     = var.palo_local_password
-  panorama_server_list    = var.panorama_server_list
+  source               = "./modules/palo_alto_virtual_machine"
+  network_details      = module.vnet.subnets
+  resource_group_name  = var.resource_groups.paloalto_resource_group.name
+  location             = var.location
+  tags                 = merge(var.tags.common_tags, var.tags.compute_tags)
+  nva_details          = local.networking_definitions["nva_configuration"]["obew"]
+  vm_sku               = var.palo_vm_sku
+  palo_local_user      = var.palo_local_user
+  palo_local_password  = var.palo_local_password
+  panorama_server_list = var.panorama_server_list
   untrust_pip_prefixes = azurerm_public_ip_prefix.palo_obew
-  deploy_palo_vms         = var.deploy_palo_vms
+  deploy_palo_vms      = var.deploy_palo_vms
 
   depends_on = [module.vnet]
 }
@@ -101,16 +101,16 @@ module "trust_lb" {
 
 
 module "inbound_load_balancer" {
-  source = "./modules/public_azure_load_balancer"
+  source                 = "./modules/public_azure_load_balancer"
   name                   = "InboundLB-${local.region_shortcode}"
   network_details        = module.vnet.subnets
   resource_group_name    = var.resource_groups.networking_resource_group.name
   location               = var.location
   tags                   = var.tags.common_tags
   networking_definitions = local.networking_definitions
-  public_ip_prefix = azurerm_public_ip_prefix.hub_ingress[0].id
+  public_ip_prefix       = azurerm_public_ip_prefix.hub_ingress[0].id
 
-depends_on = [module.palo_inbound, resource.azurerm_public_ip_prefix.hub_ingress]
+  depends_on = [module.palo_inbound, resource.azurerm_public_ip_prefix.hub_ingress]
 
 }
 
@@ -130,7 +130,7 @@ resource "azurerm_route" "trust" {
   address_prefix         = "0.0.0.0/0"
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = local.networking_definitions.trust_lb_ip
-  depends_on = [module.vnet]
+  depends_on             = [module.vnet]
 }
 
 resource "azurerm_route" "untrust" {
@@ -139,7 +139,7 @@ resource "azurerm_route" "untrust" {
   resource_group_name = var.resource_groups.networking_resource_group.name
   address_prefix      = "0.0.0.0/0"
   next_hop_type       = "internet"
-  depends_on = [module.vnet]
+  depends_on          = [module.vnet]
 }
 
 resource "azurerm_route" "management" {
@@ -148,7 +148,7 @@ resource "azurerm_route" "management" {
   resource_group_name = var.resource_groups.networking_resource_group.name
   address_prefix      = "0.0.0.0/0"
   next_hop_type       = "VirtualNetworkGateway"
-  depends_on = [module.vnet]
+  depends_on          = [module.vnet]
 }
 
 resource "azurerm_route" "gatewaysubnet" {
@@ -159,5 +159,5 @@ resource "azurerm_route" "gatewaysubnet" {
   address_prefix         = each.value
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = local.networking_definitions.trust_lb_ip
-  depends_on = [module.vnet]
+  depends_on             = [module.vnet]
 }

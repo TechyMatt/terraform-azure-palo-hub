@@ -18,3 +18,8 @@ variable "untrust_pip_prefixes" {
 variable "deploy_palo_vms" {
   default = true
 }
+
+variable "interface_public_ip" {
+  description = "Optional: Specifies whether or not to attach public IPs to the untrust interface"
+  default = true
+}

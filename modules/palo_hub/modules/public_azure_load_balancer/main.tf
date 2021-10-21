@@ -7,12 +7,12 @@ variable "name" {}
 variable "public_ip_prefix" {}
 
 resource "azurerm_public_ip" "local" {
-  for_each = var.networking_definitions.inbound_load_balancer_ports
+  for_each            = var.networking_definitions.inbound_load_balancer_ports
   name                = each.key
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
-  sku = "Standard"
+  sku                 = "Standard"
   public_ip_prefix_id = var.public_ip_prefix
 }
 
@@ -26,8 +26,8 @@ resource "azurerm_lb" "local" {
     for_each = var.networking_definitions.inbound_load_balancer_ports
 
     content {
-        name                 = frontend_ip_configuration.key
-        public_ip_address_id = azurerm_public_ip.local[frontend_ip_configuration.key].id
+      name                 = frontend_ip_configuration.key
+      public_ip_address_id = azurerm_public_ip.local[frontend_ip_configuration.key].id
     }
   }
 
@@ -35,13 +35,13 @@ resource "azurerm_lb" "local" {
 }
 
 resource "azurerm_lb_backend_address_pool" "local" {
-  for_each = var.networking_definitions.inbound_load_balancer_ports
+  for_each        = var.networking_definitions.inbound_load_balancer_ports
   loadbalancer_id = azurerm_lb.local.id
   name            = each.key
 }
 
 resource "azurerm_lb_probe" "local" {
-  for_each = var.networking_definitions.inbound_load_balancer_ports
+  for_each            = var.networking_definitions.inbound_load_balancer_ports
   resource_group_name = var.resource_group_name
   loadbalancer_id     = azurerm_lb.local.id
   name                = "${each.key}-probe"
